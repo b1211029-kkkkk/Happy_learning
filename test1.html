@@ -51,7 +51,7 @@ button{ margin-top:20px; padding:8px 16px; }
 </div>
 
 <script>
-/* 字彙庫（題目改成挖空形式） */
+/* 字彙庫 */
 const vocab = [
 {w:"efficient", q:"The new system works very _____.", a:"efficient", e:"efficient 常用於描述人或系統的效率。"},
 {w:"request", q:"Please ask for more _____.", a:"information", e:"request 為正式請求，多用於商業信件，挖空改成 information。"},
@@ -67,7 +67,6 @@ const vocab = [
 
 let current = [];
 
-/* 開始測驗 */
 function startQuiz(){
  document.getElementById("quiz").innerHTML="";
  document.getElementById("score").innerHTML="";
@@ -75,7 +74,6 @@ function startQuiz(){
  current = vocab.sort(()=>0.5-Math.random()).slice(0,10);
 
  current.forEach((item,i)=>{
-  // 產生不洩題的干擾選項
   let distractors = vocab
     .map(v=>v.a)
     .filter(a => a !== item.a && !item.q.toLowerCase().includes(a.toLowerCase()))
@@ -96,7 +94,6 @@ function startQuiz(){
  });
 }
 
-/* 提交作答 */
 function submitQuiz(){
  let score=0;
  let wrongWords=[];
@@ -138,6 +135,7 @@ startQuiz();
 
 </body>
 </html>
+
 
 
 
