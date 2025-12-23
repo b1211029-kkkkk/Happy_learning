@@ -2,152 +2,150 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<title>字彙測驗</title>
+<title>字彙測驗系統</title>
 
 <style>
-body {
-  font-family: "微軟正黑體";
-  padding: 20px;
+body{
+  font-family:"微軟正黑體";
+  padding:20px;
+  line-height:1.8;
 }
 
-.answer {
-  color: green;
-  display: none;
-  margin-top: 5px;
+.question{
+  border-bottom:1px solid #ccc;
+  margin-bottom:15px;
+  padding-bottom:10px;
 }
 
-button {
-  font-size: 16px;
-  padding: 8px 16px;
-  margin-top: 20px;
+.correct{ color:green; }
+.wrong{ color:red; }
+
+.answer{
+  display:none;
+  margin-top:5px;
+}
+
+button{
+  margin-top:15px;
+  padding:8px 15px;
+  font-size:16px;
 }
 </style>
-
-<script>
-function submitQuiz() {
-  const totalQuestions = 10;
-  
-  for (let i = 1; i <= totalQuestions; i++) {
-    const checked = document.querySelector(`input[name="q${i}"]:checked`);
-    if (!checked) {
-      alert("第 " + i + " 題尚未作答，請完成所有題目後再提交。");
-      return;
-    }
-  }
-
-  // 顯示所有解析
-  document.querySelectorAll(".answer").forEach(a => {
-    a.style.display = "block";
-  });
-
-  // 鎖定所有選項
-  document.querySelectorAll("input[type=radio]").forEach(r => {
-    r.disabled = true;
-  });
-
-  alert("已成功提交，解析已顯示！");
-}
-</script>
 </head>
 
 <body>
 
-<h2>字彙測驗（多益 550 分）</h2>
+<h2>字彙測驗（隨機 10 題｜多益 550）</h2>
 
-<p>1. The meeting was _____ because the manager was sick.</p>
-<input type="radio" name="q1"> cancelled<br>
-<input type="radio" name="q1"> cancel<br>
-<input type="radio" name="q1"> cancelling<br>
-<input type="radio" name="q1"> cancels<br>
-<p class="answer">✔ cancelled<br>解析：被動語態需使用過去分詞。</p>
+<form id="quizForm">
+  <div id="quizArea"></div>
+  <button type="submit">提交作答</button>
+  <button type="button" onclick="restart()">重新出一組新題</button>
+</form>
 
-<hr>
+<h3 id="score"></h3>
 
-<p>2. Please _____ the form before Friday.</p>
-<input type="radio" name="q2"> submit<br>
-<input type="radio" name="q2"> delay<br>
-<input type="radio" name="q2"> refuse<br>
-<input type="radio" name="q2"> ignore<br>
-<p class="answer">✔ submit<br>解析：submit 表示提交文件。</p>
+<h3>📊 作答紀錄</h3>
+<ul id="history"></ul>
 
-<hr>
+<script>
+// ===== 題庫 =====
+const bank = [
+ {q:"The system is very _____.",o:["efficient","delay","budget","refuse"],a:"efficient",e:"efficient 表示有效率的"},
+ {q:"Please _____ assistance.",o:["request","operate","cancel","reduce"],a:"request",e:"request 表示請求"},
+ {q:"The plan was _____.",o:["approved","delayed","submitted","attended"],a:"approved",e:"approve 常考被動"},
+ {q:"She will _____ the meeting.",o:["attend","replace","delay","purchase"],a:"attend",e:"attend + 活動"},
+ {q:"The manager is not _____.",o:["available","urgent","limited","efficient"],a:"available",e:"available 可取得"},
+ {q:"Check the project _____.",o:["schedule","budget","deadline","contact"],a:"schedule",e:"schedule 行程"},
+ {q:"Please _____ the report.",o:["submit","arrange","confirm","operate"],a:"submit",e:"submit 提交"},
+ {q:"Meet the _____.",o:["deadline","budget","offer","purchase"],a:"deadline",e:"deadline 截止日"},
+ {q:"Cut the _____.",o:["budget","delay","contact","approve"],a:"budget",e:"budget 預算"},
+ {q:"Please _____ your reservation.",o:["confirm","cancel","refuse","replace"],a:"confirm",e:"confirm 確認"},
+ {q:"The company will _____ goods.",o:["deliver","attend","reduce","accept"],a:"deliver",e:"deliver 遞送"},
+ {q:"The flight was _____.",o:["delayed","submitted","approved","offered"],a:"delayed",e:"delay 延遲"},
+ {q:"Please inform us _____ changes.",o:["of","to","with","for"],a:"of",e:"inform + of"},
+ {q:"She _____ a meeting.",o:["arranged","cancelled","refused","reduced"],a:"arranged",e:"arrange 安排"},
+ {q:"The event was _____.",o:["cancelled","confirmed","accepted","provided"],a:"cancelled",e:"cancel 被動"},
+ {q:"This job _____ experience.",o:["requires","offers","reduces","employs"],a:"requires",e:"require 需要"},
+ {q:"We _____ quality.",o:["maintain","replace","delay","purchase"],a:"maintain",e:"maintain 維持"},
+ {q:"Training helps _____ skills.",o:["improve","cancel","refuse","contact"],a:"improve",e:"improve 改善"},
+ {q:"They _____ the system.",o:["replaced","accepted","provided","managed"],a:"replaced",e:"replace 取代"},
+ {q:"Customers can _____.",o:["purchase","attend","delay","operate"],a:"purchase",e:"purchase 購買"}
+];
 
-<p>3. The company plans to _____ new workers.</p>
-<input type="radio" name="q3"> hire<br>
-<input type="radio" name="q3"> fire<br>
-<input type="radio" name="q3"> retire<br>
-<input type="radio" name="q3"> borrow<br>
-<p class="answer">✔ hire<br>解析：hire 表示雇用。</p>
+// ===== 出題 =====
+let selected=[];
+function loadQuiz(){
+  document.getElementById("quizArea").innerHTML="";
+  document.getElementById("score").textContent="";
+  selected=[...bank].sort(()=>0.5-Math.random()).slice(0,10);
 
-<hr>
+  selected.forEach((q,i)=>{
+    const div=document.createElement("div");
+    div.className="question";
+    div.innerHTML=`
+      <p>${i+1}. ${q.q}</p>
+      ${q.o.map(opt=>`
+        <label>
+          <input type="radio" name="q${i}" value="${opt}" required> ${opt}
+        </label><br>`).join("")}
+      <div class="answer">✔ 正確答案：${q.a}<br>解析：${q.e}</div>
+    `;
+    document.getElementById("quizArea").appendChild(div);
+  });
+}
 
-<p>4. This product is very _____ among young people.</p>
-<input type="radio" name="q4"> popular<br>
-<input type="radio" name="q4"> boring<br>
-<input type="radio" name="q4"> expensive<br>
-<input type="radio" name="q4"> difficult<br>
-<p class="answer">✔ popular<br>解析：popular 表示受歡迎的。</p>
+// ===== 提交 =====
+document.getElementById("quizForm").addEventListener("submit",function(e){
+  e.preventDefault();
+  let score=0;
 
-<hr>
+  selected.forEach((q,i)=>{
+    const checked=document.querySelector(`input[name="q${i}"]:checked`);
+    const box=checked.parentElement;
+    const ans=document.getElementsByClassName("answer")[i];
 
-<p>5. He is responsible _____ customer service.</p>
-<input type="radio" name="q5"> for<br>
-<input type="radio" name="q5"> to<br>
-<input type="radio" name="q5"> with<br>
-<input type="radio" name="q5"> at<br>
-<p class="answer">✔ for<br>解析：be responsible for 為固定用法。</p>
+    if(checked.value===q.a){
+      score++;
+      box.classList.add("correct");
+    }else{
+      box.classList.add("wrong");
+    }
+    ans.style.display="block";
+  });
 
-<hr>
+  document.querySelectorAll("input").forEach(i=>i.disabled=true);
+  document.getElementById("score").textContent=`你的分數：${score} / 10`;
 
-<p>6. The report must be finished _____ today.</p>
-<input type="radio" name="q6"> by<br>
-<input type="radio" name="q6"> on<br>
-<input type="radio" name="q6"> at<br>
-<input type="radio" name="q6"> in<br>
-<p class="answer">✔ by<br>解析：by 表示「在…之前」。</p>
+  saveHistory(score);
+  loadHistory();
+});
 
-<hr>
+// ===== 重出 =====
+function restart(){
+  loadQuiz();
+}
 
-<p>7. The train arrived _____ time.</p>
-<input type="radio" name="q7"> on<br>
-<input type="radio" name="q7"> in<br>
-<input type="radio" name="q7"> at<br>
-<input type="radio" name="q7"> with<br>
-<p class="answer">✔ on<br>解析：on time 表示準時。</p>
+// ===== 成績紀錄 =====
+function saveHistory(score){
+  const h=JSON.parse(localStorage.getItem("history")||"[]");
+  h.unshift(`${new Date().toLocaleString()}：${score}/10`);
+  localStorage.setItem("history",JSON.stringify(h.slice(0,5)));
+}
 
-<hr>
+function loadHistory(){
+  const h=JSON.parse(localStorage.getItem("history")||"[]");
+  document.getElementById("history").innerHTML=h.map(x=>`<li>${x}</li>`).join("");
+}
 
-<p>8. The price has _____ increased.</p>
-<input type="radio" name="q8"> recently<br>
-<input type="radio" name="q8"> recent<br>
-<input type="radio" name="q8"> recents<br>
-<input type="radio" name="q8"> more recent<br>
-<p class="answer">✔ recently<br>解析：副詞修飾動詞。</p>
-
-<hr>
-
-<p>9. Please contact us if you need more _____.</p>
-<input type="radio" name="q9"> information<br>
-<input type="radio" name="q9"> inform<br>
-<input type="radio" name="q9"> informed<br>
-<input type="radio" name="q9"> informing<br>
-<p class="answer">✔ information<br>解析：need 後面接名詞。</p>
-
-<hr>
-
-<p>10. He was absent _____ work yesterday.</p>
-<input type="radio" name="q10"> from<br>
-<input type="radio" name="q10"> to<br>
-<input type="radio" name="q10"> at<br>
-<input type="radio" name="q10"> with<br>
-<p class="answer">✔ from<br>解析：be absent from 為固定用法。</p>
-
-<hr>
-
-<button onclick="submitQuiz()">提交作答</button>
+// 初始化
+loadQuiz();
+loadHistory();
+</script>
 
 </body>
 </html>
+
 
 
 
