@@ -2,486 +2,121 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<title>字彙測驗（來自字彙學習庫）</title>
+<title>字彙測驗</title>
 <style>
-body{
- font-family:"微軟正黑體";
- padding:20px;
- line-height:1.8;
-}
-.question{
- margin-bottom:15px;
- padding-bottom:10px;
- border-bottom:1px solid #ccc;
-}
-.correct{ color:green; }
-.wrong{ color:red; }
-button{ margin-top:20px; padding:8px 16px; }
-#score{ font-weight:bold; margin-top:20px; }
-#weak-word{ color:red; font-weight:bold; margin-top:10px; }
-#instructions{
- margin-top:20px;
- background:#f2f2f2;
- padding:10px;
- border-radius:5px;
-}
+body { font-family:"微軟正黑體"; padding:20px; }
+.answer { color: green; display: none; }
 </style>
+
+<script>
+function show(){
+ document.querySelectorAll(".answer").forEach(a=>{
+  a.style.display="block";
+ });
+}
+</script>
 </head>
 
 <body>
 
 <h2>字彙測驗（多益 550 分）</h2>
-<p>請完成以下 10 題後按「提交作答」，系統將顯示答案與解析。</p>
 
-<div id="quiz"></div>
+<p>1. The meeting was _____ because the manager was sick.</p>
+<input type="radio"> cancelled<br>
+<input type="radio"> cancel<br>
+<input type="radio"> cancelling<br>
+<input type="radio"> cancels<br>
+<p class="answer">✔ cancelled<br>解析：被動語態需使用過去分詞。</p>
 
-<button onclick="submitQuiz()">提交作答</button>
-<button onclick="startQuiz()">再次練習</button>
+<hr>
 
-<div id="score"></div>
-<div id="weak-word"></div>
+<p>2. Please _____ the form before Friday.</p>
+<input type="radio"> submit<br>
+<input type="radio"> delay<br>
+<input type="radio"> refuse<br>
+<input type="radio"> ignore<br>
+<p class="answer">✔ submit<br>解析：submit 表示提交文件。</p>
 
-<div id="instructions">
-<h3>作業說明：</h3>
-<p>
-本測驗題幹刻意避免出現目標單字或其明顯線索，
-學生需透過語意理解選出正確字彙。
-</p>
-</div>
+<hr>
 
-<script>
-/* 字彙庫（修正版：題幹不洩題） */
-const vocab = [
-{
- w:"efficient",
- q:"The new system works very _____.",
- a:"efficient",
- e:"efficient 常用於描述人或系統的效率。"
-},
-{
- w:"request",
- q:"Please ask for more information.",
- a:"request",
- e:"request 為正式請求，多用於商業信件。"
-},
-{
- w:"approve",
- q:"The plan finally received official permission.",
- a:"approved",
- e:"approve 常考被動語態 was approved。"
-},
-{
- w:"attend",
- q:"She will be present at the meeting tomorrow.",
- a:"attend",
- e:"attend 直接接活動，不需介系詞。"
-},
-{
- w:"available",
- q:"The manager can meet you this afternoon.",
- a:"available",
- e:"available 可形容人或物可取得。"
-},
-{
- w:"schedule",
- q:"Please check the timetable before booking.",
- a:"schedule",
- e:"schedule 可作名詞或動詞。"
-},
-{
- w:"deadline",
- q:"All reports must be turned in before the final date.",
- a:"deadline",
- e:"deadline 為截止時間。"
-},
-{
- w:"budget",
- q:"The company reduced spending this year.",
- a:"budget",
- e:"budget 為公司財務高頻字。"
-},
-{
- w:"confirm",
- q:"Please let us know if the meeting time is correct.",
- a:"confirm",
- e:"confirm 常見於 email 用語。"
-},
-{
- w:"deliver",
- q:"The company will send the goods tomorrow.",
- a:"deliver",
- e:"deliver 常與 goods / package 搭配。"
-},
-{
- w:"delay",
- q:"The flight did not leave on time because of weather.",
- a:"delayed",
- e:"delay 常考被動語態與 due to。"
-},
-{
- w:"inform",
- q:"Please tell us about the change.",
- a:"inform",
- e:"inform + 人 + of + 事情。"
-},
-{
- w:"arrange",
- q:"She set up a meeting with the client.",
- a:"arrange",
- e:"arrange 常與 meeting 搭配。"
-},
-{
- w:"cancel",
- q:"The event did not take place as planned.",
- a:"cancelled",
- e:"cancel 常考被動語態。"
-},
-{
- w:"require",
- q:"This job needs previous experience.",
- a:"requires",
- e:"require + 名詞 / to V。"
-},
-{
- w:"maintain",
- q:"The company keeps high standards.",
- a:"maintain",
- e:"maintain 常與 quality / standard 搭配。"
-},
-{
- w:"improve",
- q:"Training can make performance better.",
- a:"improve",
- e:"improve + efficiency / performance。"
-},
-{
- w:"replace",
- q:"They changed the old system to a new one.",
- a:"replaced",
- e:"replace A with B 為常考結構。"
-},
-{
- w:"purchase",
- q:"Customers can buy products online.",
- a:"purchase",
- e:"purchase 為正式用語。"
-},
-{
- w:"contact",
- q:"Please get in touch with customer service.",
- a:"contact",
- e:"contact 後不加介系詞。"
-},
-{
- w:"provide",
- q:"The company gives training to employees.",
- a:"provides",
- e:"provide A with B。"
-},
-{
- w:"accept",
- q:"She said yes to the offer.",
- a:"accepted",
- e:"accept 與 refuse 為反義。"
-},
-{
- w:"refuse",
- q:"He said no to giving any comment.",
- a:"refused",
- e:"refuse + to V。"
-},
-{
- w:"offer",
- q:"The store gave customers a discount.",
- a:"offered",
- e:"offer 可作動詞或名詞。"
-},
-{
- w:"promote",
- q:"She moved to a higher position last year.",
- a:"promoted",
- e:"promote 可指升遷或促銷。"
-},
-{
- w:"employ",
- q:"The firm has 200 workers.",
- a:"employs",
- e:"employ 與 employee 注意詞性。"
-},
-{
- w:"manage",
- q:"He was able to finish the task on time.",
- a:"managed",
- e:"manage to + V。"
-},
-{
- w:"operate",
- q:"The company runs its business globally.",
- a:"operates",
- e:"operate a business。"
-},
-{
- w:"reduce",
- q:"They lowered costs last year.",
- a:"reduced",
- e:"reduce 常與 costs 搭配。"
-},
- {
- w:"advertise",
- q:"The company wants to promote its new product.",
- a:"advertise",
- e:"advertise 常用於宣傳商品或服務。"
-},
-{
- w:"attitude",
- q:"A positive _____ can improve work performance.",
- a:"attitude",
- e:"attitude 為常考抽象名詞，指態度或心態。"
-},
-{
- w:"benefit",
- q:"Employees receive health insurance as a _____ of the job.",
- a:"benefit",
- e:"benefit 作為名詞或動詞，表示好處或福利。"
-},
-{
- w:"candidate",
- q:"The company interviewed a qualified _____ for the position.",
- a:"candidate",
- e:"candidate 為求職者或候選人。"
-},
-{
- w:"competition",
- q:"There is strong _____ among companies in this industry.",
- a:"competition",
- e:"competition 常用於商業或職場語境。"
-},
-{
- w:"conference",
- q:"She attended an international business _____ last week.",
- a:"conference",
- e:"conference 指正式會議或研討會。"
-},
-{
- w:"contract",
- q:"Both parties signed a legal _____ yesterday.",
- a:"contract",
- e:"contract 可作名詞或動詞，指合約或簽約。"
-},
-{
- w:"customer",
- q:"The shop provides excellent service to every _____.",
- a:"customer",
- e:"customer 為顧客或客戶。"
-},
-{
- w:"delivery",
- q:"The _____ of the goods was delayed due to rain.",
- a:"delivery",
- e:"delivery 指交貨或送達。"
-},
-{
- w:"department",
- q:"He works in the sales _____ of the company.",
- a:"department",
- e:"department 指公司部門或科室。"
-},
-{
- w:"discussion",
- q:"The team had a long _____ about the project.",
- a:"discussion",
- e:"discussion 為討論，常用於會議語境。"
-},
-{
- w:"document",
- q:"Please submit the required _____ before the deadline.",
- a:"document",
- e:"document 指文件或資料。"
-},
-{
- w:"experience",
- q:"Applicants should have work _____ in marketing.",
- a:"experience",
- e:"experience 常指工作經驗或經歷。"
-},
-{
- w:"facility",
- q:"The company has modern training _____ for staff.",
- a:"facility",
- e:"facility 指設施或場所。"
-},
-{
- w:"feedback",
- q:"Employees are encouraged to give _____ after training.",
- a:"feedback",
- e:"feedback 指意見回饋。"
-},
-{
- w:"finance",
- q:"She works in the _____ department managing budgets.",
- a:"finance",
- e:"finance 指財務或金融相關。"
-},
-{
- w:"goal",
- q:"The team set a clear _____ for the next quarter.",
- a:"goal",
- e:"goal 為目標，常用於計畫或績效。"
-},
-{
- w:"meeting",
- q:"The weekly _____ was held on Monday.",
- a:"meeting",
- e:"meeting 指會議，常與 attend 搭配。"
-},
-{
- w:"notice",
- q:"Employees received a _____ about the upcoming changes.",
- a:"notice",
- e:"notice 可指通知或公告。"
-},
-{
- w:"opportunity",
- q:"The internship is a great _____ to gain experience.",
- a:"opportunity",
- e:"opportunity 指機會，常用於職場語境。"
-},
-{
- w:"order",
- q:"The customer placed an online _____ for the product.",
- a:"order",
- e:"order 可指訂單或點餐，也可作動詞。"
-},
-{
- w:"policy",
- q:"The company has a strict _____ regarding attendance.",
- a:"policy",
- e:"policy 指政策或規定。"
-},
-{
- w:"position",
- q:"He applied for the manager _____ in the company.",
- a:"position",
- e:"position 可指職位或工作崗位。"
-},
-{
- w:"procedure",
- q:"Please follow the correct safety _____ at all times.",
- a:"procedure",
- e:"procedure 指程序或步驟。"
-},
-{
- w:"profit",
- q:"The company increased its _____ this year.",
- a:"profit",
- e:"profit 指盈利或利潤。"
-},
-{
- w:"promotion",
- q:"She received a _____ to senior manager last month.",
- a:"promotion",
- e:"promotion 可指升遷或促銷。"
-},
-{
- w:"proposal",
- q:"The team submitted a business _____ for review.",
- a:"proposal",
- e:"proposal 指提案或計畫書。"
-},
-{
- w:"reception",
- q:"Guests were welcomed at the hotel _____ desk.",
- a:"reception",
- e:"reception 指接待處或接待會。"
-},
-{
- w:"report",
- q:"He prepared a financial _____ for the board meeting.",
- a:"report",
- e:"report 可作名詞或動詞，指報告或報導。"
-},
-{
- w:"salary",
- q:"The new job offers a higher monthly _____.",
- a:"salary",
- e:"salary 指薪水或工資。"
-}
+<p>3. The company plans to _____ new workers.</p>
+<input type="radio"> hire<br>
+<input type="radio"> fire<br>
+<input type="radio"> retire<br>
+<input type="radio"> borrow<br>
+<p class="answer">✔ hire<br>解析：hire 表示雇用。</p>
 
-];
+<hr>
 
-let current = [];
+<p>4. This product is very _____ among young people.</p>
+<input type="radio"> popular<br>
+<input type="radio"> boring<br>
+<input type="radio"> expensive<br>
+<input type="radio"> difficult<br>
+<p class="answer">✔ popular<br>解析：popular 表示受歡迎的。</p>
 
-/* 開始測驗 */
-function startQuiz(){
- document.getElementById("quiz").innerHTML="";
- document.getElementById("score").innerHTML="";
- document.getElementById("weak-word").innerHTML="";
- current = vocab.sort(()=>0.5-Math.random()).slice(0,10);
+<hr>
 
- current.forEach((item,i)=>{
-  // 產生不洩題的干擾選項
-  let distractors = vocab
-    .map(v=>v.a)
-    .filter(a => a !== item.a && !item.q.toLowerCase().includes(a.toLowerCase()))
-    .sort(()=>0.5-Math.random())
-    .slice(0,3);
+<p>5. He is responsible _____ customer service.</p>
+<input type="radio"> for<br>
+<input type="radio"> to<br>
+<input type="radio"> with<br>
+<input type="radio"> at<br>
+<p class="answer">✔ for<br>解析：be responsible for 為固定用法。</p>
 
-  let options = [item.a, ...distractors].sort(()=>0.5-Math.random());
+<hr>
 
-  document.getElementById("quiz").innerHTML += `
-   <div class="question">
-    <p>${i+1}. ${item.q}</p>
-    ${options.map(o=>`
-      <label>
-        <input type="radio" name="q${i}" value="${o}"> ${o}
-      </label><br>`).join("")}
-    <p id="r${i}"></p>
-   </div>`;
- });
-}
+<p>6. The report must be finished _____ today.</p>
+<input type="radio"> by<br>
+<input type="radio"> on<br>
+<input type="radio"> at<br>
+<input type="radio"> in<br>
+<p class="answer">✔ by<br>解析：by 表示「在…之前」。</p>
 
-/* 提交作答 */
-function submitQuiz(){
- let score=0;
- let wrongWords=[];
+<hr>
 
- for(let i=0;i<current.length;i++){
-  let checked=document.querySelector(`input[name="q${i}"]:checked`);
-  if(!checked){
-   alert("請完成所有題目再提交！");
-   return;
-  }
- }
+<p>7. The train arrived _____ time.</p>
+<input type="radio"> on<br>
+<input type="radio"> in<br>
+<input type="radio"> at<br>
+<input type="radio"> with<br>
+<p class="answer">✔ on<br>解析：on time 表示準時。</p>
 
- current.forEach((item,i)=>{
-  let checked=document.querySelector(`input[name="q${i}"]:checked`).value;
-  let result=document.getElementById("r"+i);
-  if(checked===item.a){
-   result.innerHTML=`<span class="correct">✔ 正確</span><br>解析：${item.e}`;
-   score++;
-  }else{
-   result.innerHTML=`<span class="wrong">✘ 錯誤</span><br>
-   正確答案：${item.a}<br>解析：${item.e}`;
-   wrongWords.push(item.w);
-  }
- });
+<hr>
 
- document.getElementById("score").innerHTML = `總分：${score} / 10 分`;
+<p>8. The price has _____ increased.</p>
+<input type="radio"> recently<br>
+<input type="radio"> recent<br>
+<input type="radio"> recents<br>
+<input type="radio"> more recent<br>
+<p class="answer">✔ recently<br>解析：副詞修飾動詞。</p>
 
- if(wrongWords.length>0){
-  document.getElementById("weak-word").innerHTML =
-   `學生最弱的單字（本次）：${wrongWords.join("、")}`;
- }else{
-  document.getElementById("weak-word").innerHTML =
-   `恭喜！本次全部答對！`;
- }
-}
+<hr>
 
-startQuiz();
-</script>
+<p>9. Please contact us if you need more _____.</p>
+<input type="radio"> information<br>
+<input type="radio"> inform<br>
+<input type="radio"> informed<br>
+<input type="radio"> informing<br>
+<p class="answer">✔ information<br>解析：need 後面接名詞。</p>
+
+<hr>
+
+<p>10. He was absent _____ work yesterday.</p>
+<input type="radio"> from<br>
+<input type="radio"> to<br>
+<input type="radio"> at<br>
+<input type="radio"> with<br>
+<p class="answer">✔ from<br>解析：be absent from 為固定用法。</p>
+
+<hr>
+
+<button onclick="show()">顯示答案與解析</button>
 
 </body>
 </html>
+
+
 
 
 
