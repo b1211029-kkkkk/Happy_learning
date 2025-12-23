@@ -8,6 +8,7 @@ body{
  font-family:"微軟正黑體";
  padding:20px;
  line-height:1.8;
+ background-color:#f4f6f7;
 }
 .question{
  margin-bottom:15px;
@@ -50,182 +51,18 @@ button{ margin-top:20px; padding:8px 16px; }
 </div>
 
 <script>
-/* 字彙庫（修正版：題幹不洩題） */
+/* 字彙庫（題目改成挖空形式） */
 const vocab = [
-{
- w:"efficient",
- q:"The new system works very _____.",
- a:"efficient",
- e:"efficient 常用於描述人或系統的效率。"
-},
-{
- w:"request",
- q:"Please ask for more information.",
- a:"request",
- e:"request 為正式請求，多用於商業信件。"
-},
-{
- w:"approve",
- q:"The plan finally received official permission.",
- a:"approved",
- e:"approve 常考被動語態 was approved。"
-},
-{
- w:"attend",
- q:"She will be present at the meeting tomorrow.",
- a:"attend",
- e:"attend 直接接活動，不需介系詞。"
-},
-{
- w:"available",
- q:"The manager can meet you this afternoon.",
- a:"available",
- e:"available 可形容人或物可取得。"
-},
-{
- w:"schedule",
- q:"Please check the timetable before booking.",
- a:"schedule",
- e:"schedule 可作名詞或動詞。"
-},
-{
- w:"deadline",
- q:"All reports must be turned in before the final date.",
- a:"deadline",
- e:"deadline 為截止時間。"
-},
-{
- w:"budget",
- q:"The company reduced spending this year.",
- a:"budget",
- e:"budget 為公司財務高頻字。"
-},
-{
- w:"confirm",
- q:"Please let us know if the meeting time is correct.",
- a:"confirm",
- e:"confirm 常見於 email 用語。"
-},
-{
- w:"deliver",
- q:"The company will send the goods tomorrow.",
- a:"deliver",
- e:"deliver 常與 goods / package 搭配。"
-},
-{
- w:"delay",
- q:"The flight did not leave on time because of weather.",
- a:"delayed",
- e:"delay 常考被動語態與 due to。"
-},
-{
- w:"inform",
- q:"Please tell us about the change.",
- a:"inform",
- e:"inform + 人 + of + 事情。"
-},
-{
- w:"arrange",
- q:"She set up a meeting with the client.",
- a:"arrange",
- e:"arrange 常與 meeting 搭配。"
-},
-{
- w:"cancel",
- q:"The event did not take place as planned.",
- a:"cancelled",
- e:"cancel 常考被動語態。"
-},
-{
- w:"require",
- q:"This job needs previous experience.",
- a:"requires",
- e:"require + 名詞 / to V。"
-},
-{
- w:"maintain",
- q:"The company keeps high standards.",
- a:"maintain",
- e:"maintain 常與 quality / standard 搭配。"
-},
-{
- w:"improve",
- q:"Training can make performance better.",
- a:"improve",
- e:"improve + efficiency / performance。"
-},
-{
- w:"replace",
- q:"They changed the old system to a new one.",
- a:"replaced",
- e:"replace A with B 為常考結構。"
-},
-{
- w:"purchase",
- q:"Customers can buy products online.",
- a:"purchase",
- e:"purchase 為正式用語。"
-},
-{
- w:"contact",
- q:"Please get in touch with customer service.",
- a:"contact",
- e:"contact 後不加介系詞。"
-},
-{
- w:"provide",
- q:"The company gives training to employees.",
- a:"provides",
- e:"provide A with B。"
-},
-{
- w:"accept",
- q:"She said yes to the offer.",
- a:"accepted",
- e:"accept 與 refuse 為反義。"
-},
-{
- w:"refuse",
- q:"He said no to giving any comment.",
- a:"refused",
- e:"refuse + to V。"
-},
-{
- w:"offer",
- q:"The store gave customers a discount.",
- a:"offered",
- e:"offer 可作動詞或名詞。"
-},
-{
- w:"promote",
- q:"She moved to a higher position last year.",
- a:"promoted",
- e:"promote 可指升遷或促銷。"
-},
-{
- w:"employ",
- q:"The firm has 200 workers.",
- a:"employs",
- e:"employ 與 employee 注意詞性。"
-},
-{
- w:"manage",
- q:"He was able to finish the task on time.",
- a:"managed",
- e:"manage to + V。"
-},
-{
- w:"operate",
- q:"The company runs its business globally.",
- a:"operates",
- e:"operate a business。"
-},
-{
- w:"reduce",
- q:"They lowered costs last year.",
- a:"reduced",
- e:"reduce 常與 costs 搭配。"
-}
+{w:"efficient", q:"The new system works very _____.", a:"efficient", e:"efficient 常用於描述人或系統的效率。"},
+{w:"request", q:"Please ask for more _____.", a:"information", e:"request 為正式請求，多用於商業信件，挖空改成 information。"},
+{w:"approve", q:"The plan finally received official _____.", a:"approval", e:"approve 常考被動語態 was approved。"},
+{w:"attend", q:"She will _____ the meeting tomorrow.", a:"attend", e:"attend 直接接活動，不需介系詞。"},
+{w:"available", q:"The manager is _____ this afternoon.", a:"available", e:"available 可形容人或物可取得。"},
+{w:"schedule", q:"Please check the _____ before booking.", a:"schedule", e:"schedule 可作名詞或動詞。"},
+{w:"deadline", q:"All reports must be turned in before the final _____.", a:"deadline", e:"deadline 為截止時間。"},
+{w:"budget", q:"The company reduced its _____ this year.", a:"budget", e:"budget 為公司財務高頻字。"},
+{w:"confirm", q:"Please _____ if the meeting time is correct.", a:"confirm", e:"confirm 常見於 email 用語。"},
+{w:"deliver", q:"The company will _____ the goods tomorrow.", a:"deliver", e:"deliver 常與 goods / package 搭配。"}
 ];
 
 let current = [];
@@ -301,9 +138,6 @@ startQuiz();
 
 </body>
 </html>
-
-
-
 
 
 
