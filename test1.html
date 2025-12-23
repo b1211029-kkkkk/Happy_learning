@@ -19,7 +19,12 @@ body{
 button{ margin-top:20px; padding:8px 16px; }
 #score{ font-weight:bold; margin-top:20px; }
 #weak-word{ color:red; font-weight:bold; margin-top:10px; }
-#instructions{ margin-top:20px; background:#f2f2f2; padding:10px; border-radius:5px; }
+#instructions{
+ margin-top:20px;
+ background:#f2f2f2;
+ padding:10px;
+ border-radius:5px;
+}
 </style>
 </head>
 
@@ -38,71 +43,189 @@ button{ margin-top:20px; padding:8px 16px; }
 
 <div id="instructions">
 <h3>作業說明：</h3>
-<p>此測驗可與字彙庫搭配使用：建議學生將答錯的單字記錄下來，並在字彙庫中複習其意思與例句。可重複練習多次，追蹤自己最常答錯的單字，並針對這些單字進行加強學習。</p>
+<p>
+本測驗題幹刻意避免出現目標單字或其明顯線索，
+學生需透過語意理解選出正確字彙。
+</p>
 </div>
 
 <script>
-/* 字彙庫（1–30） */
+/* 字彙庫（修正版：題幹不洩題） */
 const vocab = [
- {w:"efficient", q:"The new system is very _____.", a:"efficient",
-  e:"efficient 常用於描述人或系統有效率。"},
- {w:"request", q:"We _____ more information.", a:"request",
-  e:"request 為正式請求，多見於商業信件。"},
- {w:"approve", q:"The plan was _____.", a:"approved",
-  e:"approve 常考被動語態 was approved。"},
- {w:"attend", q:"She will _____ the meeting.", a:"attend",
-  e:"attend 直接接活動，不需介系詞。"},
- {w:"available", q:"The manager is _____.", a:"available",
-  e:"available 可形容人或物可取得。"},
- {w:"schedule", q:"Please check the _____.", a:"schedule",
-  e:"schedule 可作名詞或動詞。"},
- {w:"submit", q:"Submit the report before the _____.", a:"deadline",
-  e:"submit 常與 report / form 搭配。"},
- {w:"deadline", q:"We must meet the _____.", a:"deadline",
-  e:"deadline 為截止時間。"},
- {w:"budget", q:"The company cut the _____.", a:"budget",
-  e:"budget 為公司財務高頻字。"},
- {w:"confirm", q:"Please _____ the meeting time.", a:"confirm",
-  e:"confirm 常見於 email 用語。"},
- {w:"deliver", q:"The company will _____ the goods tomorrow.", a:"deliver",
-  e:"deliver 常與 goods / package 搭配。"},
- {w:"delay", q:"The flight was _____ due to weather.", a:"delayed",
-  e:"delay 常考 due to 句型。"},
- {w:"inform", q:"Please inform us _____ the change.", a:"of",
-  e:"inform + 人 + of + 事情。"},
- {w:"arrange", q:"She arranged a _____ with the client.", a:"meeting",
-  e:"arrange 常與 meeting 搭配。"},
- {w:"cancel", q:"The event was _____.", a:"cancelled",
-  e:"cancel 常考被動語態。"},
- {w:"require", q:"This job _____ experience.", a:"requires",
-  e:"require + 名詞 / to V。"},
- {w:"maintain", q:"We maintain high _____.", a:"quality",
-  e:"maintain 常與 quality 搭配。"},
- {w:"improve", q:"Training can _____ performance.", a:"improve",
-  e:"improve + efficiency / performance。"},
- {w:"replace", q:"They _____   the old system.", a:"replaced",
-  e:"replace A with B 為常考結構。"},
- {w:"purchase", q:"Customers can _____ online.", a:"purchase",
-  e:"purchase 為正式用語。"},
- {w:"contact", q:"Please _____ customer service.", a:"contact",
-  e:"contact 後不加介系詞。"},
- {w:"provide", q:"The company  _____  training.", a:"provides",
-  e:"provide A with B。"},
- {w:"accept", q:"She _____ the offer.", a:"accepted",
-  e:"accept 與 refuse 為反義。"},
- {w:"refuse", q:"He refused _____ comment.", a:"to",
-  e:"refuse + to V。"},
- {w:"offer", q:"The company  _____  a discount.", a:"offered",
-  e:"offer 可作動詞或名詞。"},
- {w:"promote", q:"She was _____ last year.", a:"promoted",
-  e:"promote 可指升遷或促銷。"},
- {w:"employ", q:"The firm  _____  200 people.", a:"employs",
-  e:"employ 與 employee 注意詞性。"},
- {w:"manage", q:"He managed _____ finish on time.", a:"to",
-  e:"manage to + V。"},
- 
- {w:"reduce", q:"They  _____  costs.", a:"reduced",
-  e:"reduce 常與 costs 搭配。"}
+{
+ w:"efficient",
+ q:"The new system works very _____.",
+ a:"efficient",
+ e:"efficient 常用於描述人或系統的效率。"
+},
+{
+ w:"request",
+ q:"Please ask for more information.",
+ a:"request",
+ e:"request 為正式請求，多用於商業信件。"
+},
+{
+ w:"approve",
+ q:"The plan finally received official permission.",
+ a:"approved",
+ e:"approve 常考被動語態 was approved。"
+},
+{
+ w:"attend",
+ q:"She will be present at the meeting tomorrow.",
+ a:"attend",
+ e:"attend 直接接活動，不需介系詞。"
+},
+{
+ w:"available",
+ q:"The manager can meet you this afternoon.",
+ a:"available",
+ e:"available 可形容人或物可取得。"
+},
+{
+ w:"schedule",
+ q:"Please check the timetable before booking.",
+ a:"schedule",
+ e:"schedule 可作名詞或動詞。"
+},
+{
+ w:"deadline",
+ q:"All reports must be turned in before the final date.",
+ a:"deadline",
+ e:"deadline 為截止時間。"
+},
+{
+ w:"budget",
+ q:"The company reduced spending this year.",
+ a:"budget",
+ e:"budget 為公司財務高頻字。"
+},
+{
+ w:"confirm",
+ q:"Please let us know if the meeting time is correct.",
+ a:"confirm",
+ e:"confirm 常見於 email 用語。"
+},
+{
+ w:"deliver",
+ q:"The company will send the goods tomorrow.",
+ a:"deliver",
+ e:"deliver 常與 goods / package 搭配。"
+},
+{
+ w:"delay",
+ q:"The flight did not leave on time because of weather.",
+ a:"delayed",
+ e:"delay 常考被動語態與 due to。"
+},
+{
+ w:"inform",
+ q:"Please tell us about the change.",
+ a:"inform",
+ e:"inform + 人 + of + 事情。"
+},
+{
+ w:"arrange",
+ q:"She set up a meeting with the client.",
+ a:"arrange",
+ e:"arrange 常與 meeting 搭配。"
+},
+{
+ w:"cancel",
+ q:"The event did not take place as planned.",
+ a:"cancelled",
+ e:"cancel 常考被動語態。"
+},
+{
+ w:"require",
+ q:"This job needs previous experience.",
+ a:"requires",
+ e:"require + 名詞 / to V。"
+},
+{
+ w:"maintain",
+ q:"The company keeps high standards.",
+ a:"maintain",
+ e:"maintain 常與 quality / standard 搭配。"
+},
+{
+ w:"improve",
+ q:"Training can make performance better.",
+ a:"improve",
+ e:"improve + efficiency / performance。"
+},
+{
+ w:"replace",
+ q:"They changed the old system to a new one.",
+ a:"replaced",
+ e:"replace A with B 為常考結構。"
+},
+{
+ w:"purchase",
+ q:"Customers can buy products online.",
+ a:"purchase",
+ e:"purchase 為正式用語。"
+},
+{
+ w:"contact",
+ q:"Please get in touch with customer service.",
+ a:"contact",
+ e:"contact 後不加介系詞。"
+},
+{
+ w:"provide",
+ q:"The company gives training to employees.",
+ a:"provides",
+ e:"provide A with B。"
+},
+{
+ w:"accept",
+ q:"She said yes to the offer.",
+ a:"accepted",
+ e:"accept 與 refuse 為反義。"
+},
+{
+ w:"refuse",
+ q:"He said no to giving any comment.",
+ a:"refused",
+ e:"refuse + to V。"
+},
+{
+ w:"offer",
+ q:"The store gave customers a discount.",
+ a:"offered",
+ e:"offer 可作動詞或名詞。"
+},
+{
+ w:"promote",
+ q:"She moved to a higher position last year.",
+ a:"promoted",
+ e:"promote 可指升遷或促銷。"
+},
+{
+ w:"employ",
+ q:"The firm has 200 workers.",
+ a:"employs",
+ e:"employ 與 employee 注意詞性。"
+},
+{
+ w:"manage",
+ q:"He was able to finish the task on time.",
+ a:"managed",
+ e:"manage to + V。"
+},
+{
+ w:"operate",
+ q:"The company runs its business globally.",
+ a:"operates",
+ e:"operate a business。"
+},
+{
+ w:"reduce",
+ q:"They lowered costs last year.",
+ a:"reduced",
+ e:"reduce 常與 costs 搭配。"
+}
 ];
 
 let current = [];
@@ -115,32 +238,38 @@ function startQuiz(){
  current = vocab.sort(()=>0.5-Math.random()).slice(0,10);
 
  current.forEach((item,i)=>{
-  let options = [item.a,"manage","delay","confirm"].sort(()=>0.5-Math.random());
+  // 產生不洩題的干擾選項
+  let distractors = vocab
+    .map(v=>v.a)
+    .filter(a => a !== item.a && !item.q.toLowerCase().includes(a.toLowerCase()))
+    .sort(()=>0.5-Math.random())
+    .slice(0,3);
+
+  let options = [item.a, ...distractors].sort(()=>0.5-Math.random());
+
   document.getElementById("quiz").innerHTML += `
    <div class="question">
-   <p>${i+1}. ${item.q}</p>
-   ${options.map(o=>`
-    <label>
-     <input type="radio" name="q${i}" value="${o}"> ${o}
-    </label><br>`).join("")}
-   <p id="r${i}"></p>
+    <p>${i+1}. ${item.q}</p>
+    ${options.map(o=>`
+      <label>
+        <input type="radio" name="q${i}" value="${o}"> ${o}
+      </label><br>`).join("")}
+    <p id="r${i}"></p>
    </div>`;
  });
 }
 
 /* 提交作答 */
 function submitQuiz(){
- let allAnswered=true;
- let wrongWords=[]; // 存放答錯單字
  let score=0;
+ let wrongWords=[];
 
- current.forEach((item,i)=>{
+ for(let i=0;i<current.length;i++){
   let checked=document.querySelector(`input[name="q${i}"]:checked`);
-  if(!checked) allAnswered=false;
- });
- if(!allAnswered){
-  alert("請先完成所有題目再提交！");
-  return;
+  if(!checked){
+   alert("請完成所有題目再提交！");
+   return;
+  }
  }
 
  current.forEach((item,i)=>{
@@ -159,10 +288,11 @@ function submitQuiz(){
  document.getElementById("score").innerHTML = `總分：${score} / 10 分`;
 
  if(wrongWords.length>0){
-   // 找出最常答錯的單字（這裡簡單取第一個答錯的字）
-   document.getElementById("weak-word").innerHTML = `學生最弱的單字：${wrongWords[0]}`;
+  document.getElementById("weak-word").innerHTML =
+   `學生最弱的單字（本次）：${wrongWords.join("、")}`;
  }else{
-   document.getElementById("weak-word").innerHTML = `恭喜！所有單字答對！`;
+  document.getElementById("weak-word").innerHTML =
+   `恭喜！本次全部答對！`;
  }
 }
 
