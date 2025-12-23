@@ -2,77 +2,119 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<title>字彙學習庫</title>
-
+<title>字彙測驗</title>
 <style>
-body{
-  font-family:"微軟正黑體";
-  padding:20px;
-  line-height:1.8;
-}
-
-.word{
-  border-bottom:1px solid #ccc;
-  margin-bottom:12px;
-  padding-bottom:8px;
-}
+body { font-family:"微軟正黑體"; padding:20px; }
+.answer { color: green; display: none; }
 </style>
+
+<script>
+function show(){
+ document.querySelectorAll(".answer").forEach(a=>{
+  a.style.display="block";
+ });
+}
+</script>
 </head>
 
 <body>
 
-<h2>📘 字彙學習庫（A–Z）</h2>
-<p>請先完整閱讀以下單字，再進行後續練習。</p>
+<h2>字彙測驗（多益 550 分）</h2>
 
-<div id="vocabArea"></div>
+<p>1. The meeting was _____ because the manager was sick.</p>
+<input type="radio"> cancelled<br>
+<input type="radio"> cancel<br>
+<input type="radio"> cancelling<br>
+<input type="radio"> cancels<br>
+<p class="answer">✔ cancelled<br>解析：被動語態需使用過去分詞。</p>
 
-<script>
-// ===== 單字庫（唯一資料來源）=====
-const vocabBank = [
- {word:"approve", pos:"v.", meaning:"核准", example:"The plan was approved."},
- {word:"arrange", pos:"v.", meaning:"安排", example:"Arrange a meeting."},
- {word:"attend", pos:"v.", meaning:"出席", example:"Attend the meeting."},
- {word:"available", pos:"adj.", meaning:"可取得的", example:"She is available."},
- {word:"budget", pos:"n.", meaning:"預算", example:"Cut the budget."},
- {word:"cancel", pos:"v.", meaning:"取消", example:"The event was cancelled."},
- {word:"confirm", pos:"v.", meaning:"確認", example:"Please confirm."},
- {word:"deadline", pos:"n.", meaning:"截止日", example:"Meet the deadline."},
- {word:"delay", pos:"v./n.", meaning:"延遲", example:"The flight was delayed."},
- {word:"deliver", pos:"v.", meaning:"遞送", example:"Deliver the goods."},
- {word:"efficient", pos:"adj.", meaning:"有效率的", example:"The system is efficient."},
- {word:"improve", pos:"v.", meaning:"改善", example:"Improve performance."},
- {word:"inform", pos:"v.", meaning:"通知", example:"Inform us of changes."},
- {word:"maintain", pos:"v.", meaning:"維持", example:"Maintain quality."},
- {word:"purchase", pos:"v./n.", meaning:"購買", example:"Purchase online."},
- {word:"replace", pos:"v.", meaning:"取代", example:"Replace the system."},
- {word:"request", pos:"v./n.", meaning:"請求", example:"We request assistance."},
- {word:"require", pos:"v.", meaning:"需要", example:"This job requires experience."},
- {word:"schedule", pos:"n./v.", meaning:"行程", example:"Check the schedule."},
- {word:"submit", pos:"v.", meaning:"提交", example:"Submit the report."}
-];
+<hr>
 
-// ===== 保證 A–Z 排序（英文專用）=====
-vocabBank.sort((a, b) =>
-  a.word.toLowerCase().localeCompare(b.word.toLowerCase())
-);
+<p>2. Please _____ the form before Friday.</p>
+<input type="radio"> submit<br>
+<input type="radio"> delay<br>
+<input type="radio"> refuse<br>
+<input type="radio"> ignore<br>
+<p class="answer">✔ submit<br>解析：submit 表示提交文件。</p>
 
-// ===== 顯示單字 =====
-const vocabArea = document.getElementById("vocabArea");
-vocabBank.forEach((v, i) => {
-  vocabArea.innerHTML += `
-  <div class="word">
-    <h3>${i + 1}. ${v.word} (${v.pos})</h3>
-    <p>中文：${v.meaning}</p>
-    <p>例句：${v.example}</p>
-  </div>`;
-});
-</script>
+<hr>
+
+<p>3. The company plans to _____ new workers.</p>
+<input type="radio"> hire<br>
+<input type="radio"> fire<br>
+<input type="radio"> retire<br>
+<input type="radio"> borrow<br>
+<p class="answer">✔ hire<br>解析：hire 表示雇用。</p>
+
+<hr>
+
+<p>4. This product is very _____ among young people.</p>
+<input type="radio"> popular<br>
+<input type="radio"> boring<br>
+<input type="radio"> expensive<br>
+<input type="radio"> difficult<br>
+<p class="answer">✔ popular<br>解析：popular 表示受歡迎的。</p>
+
+<hr>
+
+<p>5. He is responsible _____ customer service.</p>
+<input type="radio"> for<br>
+<input type="radio"> to<br>
+<input type="radio"> with<br>
+<input type="radio"> at<br>
+<p class="answer">✔ for<br>解析：be responsible for 為固定用法。</p>
+
+<hr>
+
+<p>6. The report must be finished _____ today.</p>
+<input type="radio"> by<br>
+<input type="radio"> on<br>
+<input type="radio"> at<br>
+<input type="radio"> in<br>
+<p class="answer">✔ by<br>解析：by 表示「在…之前」。</p>
+
+<hr>
+
+<p>7. The train arrived _____ time.</p>
+<input type="radio"> on<br>
+<input type="radio"> in<br>
+<input type="radio"> at<br>
+<input type="radio"> with<br>
+<p class="answer">✔ on<br>解析：on time 表示準時。</p>
+
+<hr>
+
+<p>8. The price has _____ increased.</p>
+<input type="radio"> recently<br>
+<input type="radio"> recent<br>
+<input type="radio"> recents<br>
+<input type="radio"> more recent<br>
+<p class="answer">✔ recently<br>解析：副詞修飾動詞。</p>
+
+<hr>
+
+<p>9. Please contact us if you need more _____.</p>
+<input type="radio"> information<br>
+<input type="radio"> inform<br>
+<input type="radio"> informed<br>
+<input type="radio"> informing<br>
+<p class="answer">✔ information<br>解析：need 後面接名詞。</p>
+
+<hr>
+
+<p>10. He was absent _____ work yesterday.</p>
+<input type="radio"> from<br>
+<input type="radio"> to<br>
+<input type="radio"> at<br>
+<input type="radio"> with<br>
+<p class="answer">✔ from<br>解析：be absent from 為固定用法。</p>
+
+<hr>
+
+<button onclick="show()">顯示答案與解析</button>
 
 </body>
 </html>
-
-
-
 
 
 
