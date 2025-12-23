@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>多益戰士 之 站上550分之巔!</title>
-
     <style>
         body {
             margin: 0;
@@ -45,17 +44,7 @@
             background-color: white;
         }
     </style>
-
-    <script>
-        // 用於切換子頁時防快取
-        function loadPage(page) {
-            const iframe = document.getElementById('contentFrame');
-            // 加上亂數或時間戳避免快取
-            iframe.src = page + '?v=' + new Date().getTime();
-        }
-    </script>
 </head>
-
 <body>
 
 <!-- 入口頁 / 主畫面 -->
@@ -66,13 +55,15 @@
 
 <!-- 上方選單 -->
 <nav>
-    <a href="javascript:void(0)" onclick="loadPage('test1.html')">字彙測驗</a>
-    <a href="javascript:void(0)" onclick="loadPage('test2.html')">單字庫整理</a>
-    <a href="javascript:void(0)" onclick="loadPage('about.html')">製作團隊</a>
+    <a href="test1.html" target="content">字彙測驗</a>
+    <a href="test2.html" target="content">單字庫整理</a>
+    <a href="about.html" target="content">製作團隊</a>
 </nav>
 
 <!-- 主畫面（內容顯示區） -->
-<iframe id="contentFrame" name="content" src="test1.html?v=1"></iframe>
+<iframe name="content" src="test1.html"></iframe>
 
 </body>
 </html>
+
+
