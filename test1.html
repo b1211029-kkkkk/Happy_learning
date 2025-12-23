@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<title>字彙學習與練習</title>
+<title>字彙學習庫</title>
 
 <style>
 body{
@@ -16,131 +16,61 @@ body{
   margin-bottom:12px;
   padding-bottom:8px;
 }
-
-.question{
-  border-bottom:1px solid #ccc;
-  margin-bottom:15px;
-  padding-bottom:10px;
-}
-
-.answer{ display:none; }
-.correct{ color:green; }
-.wrong{ color:red; }
-
-button{
-  margin-top:20px;
-  padding:8px 16px;
-  font-size:16px;
-}
 </style>
 </head>
 
 <body>
 
-<h2>📘 字彙學習庫（先學）</h2>
-<p>請先完整閱讀以下單字，再點擊下方按鈕進行練習。</p>
+<h2>📘 字彙學習庫（A–Z）</h2>
+<p>請先完整閱讀以下單字，再進行後續練習。</p>
 
 <div id="vocabArea"></div>
-
-<button onclick="startQuiz()">➡️ 開始單字練習</button>
-
-<hr>
-
-<h2>📝 單字練習（隨機 10 題）</h2>
-
-<form id="quizForm" style="display:none;">
-  <div id="quizArea"></div>
-  <button type="submit">提交作答</button>
-  <button type="button" onclick="startQuiz()">重新出題</button>
-</form>
-
-<h3 id="score"></h3>
 
 <script>
 // ===== 單字庫（唯一資料來源）=====
 const vocabBank = [
- {word:"efficient", pos:"adj.", meaning:"有效率的", example:"The system is efficient."},
- {word:"request", pos:"v./n.", meaning:"請求", example:"We request assistance."},
  {word:"approve", pos:"v.", meaning:"核准", example:"The plan was approved."},
+ {word:"arrange", pos:"v.", meaning:"安排", example:"Arrange a meeting."},
  {word:"attend", pos:"v.", meaning:"出席", example:"Attend the meeting."},
  {word:"available", pos:"adj.", meaning:"可取得的", example:"She is available."},
- {word:"schedule", pos:"n./v.", meaning:"行程", example:"Check the schedule."},
- {word:"submit", pos:"v.", meaning:"提交", example:"Submit the report."},
- {word:"deadline", pos:"n.", meaning:"截止日", example:"Meet the deadline."},
  {word:"budget", pos:"n.", meaning:"預算", example:"Cut the budget."},
- {word:"confirm", pos:"v.", meaning:"確認", example:"Please confirm."},
- {word:"deliver", pos:"v.", meaning:"遞送", example:"Deliver the goods."},
- {word:"delay", pos:"v./n.", meaning:"延遲", example:"The flight was delayed."},
- {word:"inform", pos:"v.", meaning:"通知", example:"Inform us of changes."},
- {word:"arrange", pos:"v.", meaning:"安排", example:"Arrange a meeting."},
  {word:"cancel", pos:"v.", meaning:"取消", example:"The event was cancelled."},
- {word:"require", pos:"v.", meaning:"需要", example:"This job requires experience."},
- {word:"maintain", pos:"v.", meaning:"維持", example:"Maintain quality."},
+ {word:"confirm", pos:"v.", meaning:"確認", example:"Please confirm."},
+ {word:"deadline", pos:"n.", meaning:"截止日", example:"Meet the deadline."},
+ {word:"delay", pos:"v./n.", meaning:"延遲", example:"The flight was delayed."},
+ {word:"deliver", pos:"v.", meaning:"遞送", example:"Deliver the goods."},
+ {word:"efficient", pos:"adj.", meaning:"有效率的", example:"The system is efficient."},
  {word:"improve", pos:"v.", meaning:"改善", example:"Improve performance."},
+ {word:"inform", pos:"v.", meaning:"通知", example:"Inform us of changes."},
+ {word:"maintain", pos:"v.", meaning:"維持", example:"Maintain quality."},
+ {word:"purchase", pos:"v./n.", meaning:"購買", example:"Purchase online."},
  {word:"replace", pos:"v.", meaning:"取代", example:"Replace the system."},
- {word:"purchase", pos:"v./n.", meaning:"購買", example:"Purchase online."}
+ {word:"request", pos:"v./n.", meaning:"請求", example:"We request assistance."},
+ {word:"require", pos:"v.", meaning:"需要", example:"This job requires experience."},
+ {word:"schedule", pos:"n./v.", meaning:"行程", example:"Check the schedule."},
+ {word:"submit", pos:"v.", meaning:"提交", example:"Submit the report."}
 ];
 
-// ===== 顯示單字學習 =====
-const vocabArea=document.getElementById("vocabArea");
-vocabBank.forEach((v,i)=>{
-  vocabArea.innerHTML+=`
+// ===== 保證 A–Z 排序（英文專用）=====
+vocabBank.sort((a, b) =>
+  a.word.toLowerCase().localeCompare(b.word.toLowerCase())
+);
+
+// ===== 顯示單字 =====
+const vocabArea = document.getElementById("vocabArea");
+vocabBank.forEach((v, i) => {
+  vocabArea.innerHTML += `
   <div class="word">
-    <h3>${i+1}. ${v.word} (${v.pos})</h3>
+    <h3>${i + 1}. ${v.word} (${v.pos})</h3>
     <p>中文：${v.meaning}</p>
     <p>例句：${v.example}</p>
   </div>`;
 });
-
-// ===== 產生題目 =====
-function startQuiz(){
-  document.getElementById("quizForm").style.display="block";
-  document.getElementById("quizArea").innerHTML="";
-  document.getElementById("score").textContent="";
-
-  const selected=[...vocabBank].sort(()=>0.5-Math.random()).slice(0,10);
-
-  selected.forEach((v,i)=>{
-    const options=[v.word];
-    while(options.length<4){
-      const w=vocabBank[Math.floor(Math.random()*vocabBank.length)].word;
-      if(!options.includes(w)) options.push(w);
-    }
-    options.sort(()=>0.5-Math.random());
-
-    quizArea.innerHTML+=`
-    <div class="question">
-      <p>${i+1}. ${v.example.replace(v.word,"_____")}</p>
-      ${options.map(o=>`
-        <label>
-          <input type="radio" name="q${i}" value="${o}" required> ${o}
-        </label><br>`).join("")}
-      <div class="answer">✔ 正確答案：${v.word}<br>解析：${v.meaning}</div>
-    </div>`;
-  });
-
-  quizForm.onsubmit=function(e){
-    e.preventDefault();
-    let score=0;
-    selected.forEach((v,i)=>{
-      const checked=document.querySelector(`input[name="q${i}"]:checked`);
-      const box=checked.parentElement;
-      const ans=document.getElementsByClassName("answer")[i];
-      if(checked.value===v.word){
-        score++; box.classList.add("correct");
-      }else{
-        box.classList.add("wrong");
-      }
-      ans.style.display="block";
-    });
-    document.querySelectorAll("input").forEach(i=>i.disabled=true);
-    document.getElementById("score").textContent=`你的分數：${score} / 10`;
-  };
-}
 </script>
 
 </body>
 </html>
+
 
 
 
