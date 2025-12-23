@@ -3,16 +3,49 @@
 <head>
 <meta charset="UTF-8">
 <title>字彙測驗</title>
+
 <style>
-body { font-family:"微軟正黑體"; padding:20px; }
-.answer { color: green; display: none; }
+body {
+  font-family: "微軟正黑體";
+  padding: 20px;
+}
+
+.answer {
+  color: green;
+  display: none;
+  margin-top: 5px;
+}
+
+button {
+  font-size: 16px;
+  padding: 8px 16px;
+  margin-top: 20px;
+}
 </style>
 
 <script>
-function show(){
- document.querySelectorAll(".answer").forEach(a=>{
-  a.style.display="block";
- });
+function submitQuiz() {
+  const totalQuestions = 10;
+  
+  for (let i = 1; i <= totalQuestions; i++) {
+    const checked = document.querySelector(`input[name="q${i}"]:checked`);
+    if (!checked) {
+      alert("第 " + i + " 題尚未作答，請完成所有題目後再提交。");
+      return;
+    }
+  }
+
+  // 顯示所有解析
+  document.querySelectorAll(".answer").forEach(a => {
+    a.style.display = "block";
+  });
+
+  // 鎖定所有選項
+  document.querySelectorAll("input[type=radio]").forEach(r => {
+    r.disabled = true;
+  });
+
+  alert("已成功提交，解析已顯示！");
 }
 </script>
 </head>
@@ -22,99 +55,100 @@ function show(){
 <h2>字彙測驗（多益 550 分）</h2>
 
 <p>1. The meeting was _____ because the manager was sick.</p>
-<input type="radio"> cancelled<br>
-<input type="radio"> cancel<br>
-<input type="radio"> cancelling<br>
-<input type="radio"> cancels<br>
+<input type="radio" name="q1"> cancelled<br>
+<input type="radio" name="q1"> cancel<br>
+<input type="radio" name="q1"> cancelling<br>
+<input type="radio" name="q1"> cancels<br>
 <p class="answer">✔ cancelled<br>解析：被動語態需使用過去分詞。</p>
 
 <hr>
 
 <p>2. Please _____ the form before Friday.</p>
-<input type="radio"> submit<br>
-<input type="radio"> delay<br>
-<input type="radio"> refuse<br>
-<input type="radio"> ignore<br>
+<input type="radio" name="q2"> submit<br>
+<input type="radio" name="q2"> delay<br>
+<input type="radio" name="q2"> refuse<br>
+<input type="radio" name="q2"> ignore<br>
 <p class="answer">✔ submit<br>解析：submit 表示提交文件。</p>
 
 <hr>
 
 <p>3. The company plans to _____ new workers.</p>
-<input type="radio"> hire<br>
-<input type="radio"> fire<br>
-<input type="radio"> retire<br>
-<input type="radio"> borrow<br>
+<input type="radio" name="q3"> hire<br>
+<input type="radio" name="q3"> fire<br>
+<input type="radio" name="q3"> retire<br>
+<input type="radio" name="q3"> borrow<br>
 <p class="answer">✔ hire<br>解析：hire 表示雇用。</p>
 
 <hr>
 
 <p>4. This product is very _____ among young people.</p>
-<input type="radio"> popular<br>
-<input type="radio"> boring<br>
-<input type="radio"> expensive<br>
-<input type="radio"> difficult<br>
+<input type="radio" name="q4"> popular<br>
+<input type="radio" name="q4"> boring<br>
+<input type="radio" name="q4"> expensive<br>
+<input type="radio" name="q4"> difficult<br>
 <p class="answer">✔ popular<br>解析：popular 表示受歡迎的。</p>
 
 <hr>
 
 <p>5. He is responsible _____ customer service.</p>
-<input type="radio"> for<br>
-<input type="radio"> to<br>
-<input type="radio"> with<br>
-<input type="radio"> at<br>
+<input type="radio" name="q5"> for<br>
+<input type="radio" name="q5"> to<br>
+<input type="radio" name="q5"> with<br>
+<input type="radio" name="q5"> at<br>
 <p class="answer">✔ for<br>解析：be responsible for 為固定用法。</p>
 
 <hr>
 
 <p>6. The report must be finished _____ today.</p>
-<input type="radio"> by<br>
-<input type="radio"> on<br>
-<input type="radio"> at<br>
-<input type="radio"> in<br>
+<input type="radio" name="q6"> by<br>
+<input type="radio" name="q6"> on<br>
+<input type="radio" name="q6"> at<br>
+<input type="radio" name="q6"> in<br>
 <p class="answer">✔ by<br>解析：by 表示「在…之前」。</p>
 
 <hr>
 
 <p>7. The train arrived _____ time.</p>
-<input type="radio"> on<br>
-<input type="radio"> in<br>
-<input type="radio"> at<br>
-<input type="radio"> with<br>
+<input type="radio" name="q7"> on<br>
+<input type="radio" name="q7"> in<br>
+<input type="radio" name="q7"> at<br>
+<input type="radio" name="q7"> with<br>
 <p class="answer">✔ on<br>解析：on time 表示準時。</p>
 
 <hr>
 
 <p>8. The price has _____ increased.</p>
-<input type="radio"> recently<br>
-<input type="radio"> recent<br>
-<input type="radio"> recents<br>
-<input type="radio"> more recent<br>
+<input type="radio" name="q8"> recently<br>
+<input type="radio" name="q8"> recent<br>
+<input type="radio" name="q8"> recents<br>
+<input type="radio" name="q8"> more recent<br>
 <p class="answer">✔ recently<br>解析：副詞修飾動詞。</p>
 
 <hr>
 
 <p>9. Please contact us if you need more _____.</p>
-<input type="radio"> information<br>
-<input type="radio"> inform<br>
-<input type="radio"> informed<br>
-<input type="radio"> informing<br>
+<input type="radio" name="q9"> information<br>
+<input type="radio" name="q9"> inform<br>
+<input type="radio" name="q9"> informed<br>
+<input type="radio" name="q9"> informing<br>
 <p class="answer">✔ information<br>解析：need 後面接名詞。</p>
 
 <hr>
 
 <p>10. He was absent _____ work yesterday.</p>
-<input type="radio"> from<br>
-<input type="radio"> to<br>
-<input type="radio"> at<br>
-<input type="radio"> with<br>
+<input type="radio" name="q10"> from<br>
+<input type="radio" name="q10"> to<br>
+<input type="radio" name="q10"> at<br>
+<input type="radio" name="q10"> with<br>
 <p class="answer">✔ from<br>解析：be absent from 為固定用法。</p>
 
 <hr>
 
-<button onclick="show()">顯示答案與解析</button>
+<button onclick="submitQuiz()">提交作答</button>
 
 </body>
 </html>
+
 
 
 
