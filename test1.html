@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<title>字彙測驗系統</title>
+<title>字彙學習與練習</title>
 
 <style>
 body{
@@ -11,23 +11,25 @@ body{
   line-height:1.8;
 }
 
+.word{
+  border-bottom:1px solid #ccc;
+  margin-bottom:12px;
+  padding-bottom:8px;
+}
+
 .question{
   border-bottom:1px solid #ccc;
   margin-bottom:15px;
   padding-bottom:10px;
 }
 
+.answer{ display:none; }
 .correct{ color:green; }
 .wrong{ color:red; }
 
-.answer{
-  display:none;
-  margin-top:5px;
-}
-
 button{
-  margin-top:15px;
-  padding:8px 15px;
+  margin-top:20px;
+  padding:8px 16px;
   font-size:16px;
 }
 </style>
@@ -35,116 +37,111 @@ button{
 
 <body>
 
-<h2>字彙測驗（隨機 10 題｜多益 550）</h2>
+<h2>📘 字彙學習庫（先學）</h2>
+<p>請先完整閱讀以下單字，再點擊下方按鈕進行練習。</p>
 
-<form id="quizForm">
+<div id="vocabArea"></div>
+
+<button onclick="startQuiz()">➡️ 開始單字練習</button>
+
+<hr>
+
+<h2>📝 單字練習（隨機 10 題）</h2>
+
+<form id="quizForm" style="display:none;">
   <div id="quizArea"></div>
   <button type="submit">提交作答</button>
-  <button type="button" onclick="restart()">重新出一組新題</button>
+  <button type="button" onclick="startQuiz()">重新出題</button>
 </form>
 
 <h3 id="score"></h3>
 
-<h3>📊 作答紀錄</h3>
-<ul id="history"></ul>
-
 <script>
-// ===== 題庫 =====
-const bank = [
- {q:"The system is very _____.",o:["efficient","delay","budget","refuse"],a:"efficient",e:"efficient 表示有效率的"},
- {q:"Please _____ assistance.",o:["request","operate","cancel","reduce"],a:"request",e:"request 表示請求"},
- {q:"The plan was _____.",o:["approved","delayed","submitted","attended"],a:"approved",e:"approve 常考被動"},
- {q:"She will _____ the meeting.",o:["attend","replace","delay","purchase"],a:"attend",e:"attend + 活動"},
- {q:"The manager is not _____.",o:["available","urgent","limited","efficient"],a:"available",e:"available 可取得"},
- {q:"Check the project _____.",o:["schedule","budget","deadline","contact"],a:"schedule",e:"schedule 行程"},
- {q:"Please _____ the report.",o:["submit","arrange","confirm","operate"],a:"submit",e:"submit 提交"},
- {q:"Meet the _____.",o:["deadline","budget","offer","purchase"],a:"deadline",e:"deadline 截止日"},
- {q:"Cut the _____.",o:["budget","delay","contact","approve"],a:"budget",e:"budget 預算"},
- {q:"Please _____ your reservation.",o:["confirm","cancel","refuse","replace"],a:"confirm",e:"confirm 確認"},
- {q:"The company will _____ goods.",o:["deliver","attend","reduce","accept"],a:"deliver",e:"deliver 遞送"},
- {q:"The flight was _____.",o:["delayed","submitted","approved","offered"],a:"delayed",e:"delay 延遲"},
- {q:"Please inform us _____ changes.",o:["of","to","with","for"],a:"of",e:"inform + of"},
- {q:"She _____ a meeting.",o:["arranged","cancelled","refused","reduced"],a:"arranged",e:"arrange 安排"},
- {q:"The event was _____.",o:["cancelled","confirmed","accepted","provided"],a:"cancelled",e:"cancel 被動"},
- {q:"This job _____ experience.",o:["requires","offers","reduces","employs"],a:"requires",e:"require 需要"},
- {q:"We _____ quality.",o:["maintain","replace","delay","purchase"],a:"maintain",e:"maintain 維持"},
- {q:"Training helps _____ skills.",o:["improve","cancel","refuse","contact"],a:"improve",e:"improve 改善"},
- {q:"They _____ the system.",o:["replaced","accepted","provided","managed"],a:"replaced",e:"replace 取代"},
- {q:"Customers can _____.",o:["purchase","attend","delay","operate"],a:"purchase",e:"purchase 購買"}
+// ===== 單字庫（唯一資料來源）=====
+const vocabBank = [
+ {word:"efficient", pos:"adj.", meaning:"有效率的", example:"The system is efficient."},
+ {word:"request", pos:"v./n.", meaning:"請求", example:"We request assistance."},
+ {word:"approve", pos:"v.", meaning:"核准", example:"The plan was approved."},
+ {word:"attend", pos:"v.", meaning:"出席", example:"Attend the meeting."},
+ {word:"available", pos:"adj.", meaning:"可取得的", example:"She is available."},
+ {word:"schedule", pos:"n./v.", meaning:"行程", example:"Check the schedule."},
+ {word:"submit", pos:"v.", meaning:"提交", example:"Submit the report."},
+ {word:"deadline", pos:"n.", meaning:"截止日", example:"Meet the deadline."},
+ {word:"budget", pos:"n.", meaning:"預算", example:"Cut the budget."},
+ {word:"confirm", pos:"v.", meaning:"確認", example:"Please confirm."},
+ {word:"deliver", pos:"v.", meaning:"遞送", example:"Deliver the goods."},
+ {word:"delay", pos:"v./n.", meaning:"延遲", example:"The flight was delayed."},
+ {word:"inform", pos:"v.", meaning:"通知", example:"Inform us of changes."},
+ {word:"arrange", pos:"v.", meaning:"安排", example:"Arrange a meeting."},
+ {word:"cancel", pos:"v.", meaning:"取消", example:"The event was cancelled."},
+ {word:"require", pos:"v.", meaning:"需要", example:"This job requires experience."},
+ {word:"maintain", pos:"v.", meaning:"維持", example:"Maintain quality."},
+ {word:"improve", pos:"v.", meaning:"改善", example:"Improve performance."},
+ {word:"replace", pos:"v.", meaning:"取代", example:"Replace the system."},
+ {word:"purchase", pos:"v./n.", meaning:"購買", example:"Purchase online."}
 ];
 
-// ===== 出題 =====
-let selected=[];
-function loadQuiz(){
-  document.getElementById("quizArea").innerHTML="";
-  document.getElementById("score").textContent="";
-  selected=[...bank].sort(()=>0.5-Math.random()).slice(0,10);
-
-  selected.forEach((q,i)=>{
-    const div=document.createElement("div");
-    div.className="question";
-    div.innerHTML=`
-      <p>${i+1}. ${q.q}</p>
-      ${q.o.map(opt=>`
-        <label>
-          <input type="radio" name="q${i}" value="${opt}" required> ${opt}
-        </label><br>`).join("")}
-      <div class="answer">✔ 正確答案：${q.a}<br>解析：${q.e}</div>
-    `;
-    document.getElementById("quizArea").appendChild(div);
-  });
-}
-
-// ===== 提交 =====
-document.getElementById("quizForm").addEventListener("submit",function(e){
-  e.preventDefault();
-  let score=0;
-
-  selected.forEach((q,i)=>{
-    const checked=document.querySelector(`input[name="q${i}"]:checked`);
-    const box=checked.parentElement;
-    const ans=document.getElementsByClassName("answer")[i];
-
-    if(checked.value===q.a){
-      score++;
-      box.classList.add("correct");
-    }else{
-      box.classList.add("wrong");
-    }
-    ans.style.display="block";
-  });
-
-  document.querySelectorAll("input").forEach(i=>i.disabled=true);
-  document.getElementById("score").textContent=`你的分數：${score} / 10`;
-
-  saveHistory(score);
-  loadHistory();
+// ===== 顯示單字學習 =====
+const vocabArea=document.getElementById("vocabArea");
+vocabBank.forEach((v,i)=>{
+  vocabArea.innerHTML+=`
+  <div class="word">
+    <h3>${i+1}. ${v.word} (${v.pos})</h3>
+    <p>中文：${v.meaning}</p>
+    <p>例句：${v.example}</p>
+  </div>`;
 });
 
-// ===== 重出 =====
-function restart(){
-  loadQuiz();
-}
+// ===== 產生題目 =====
+function startQuiz(){
+  document.getElementById("quizForm").style.display="block";
+  document.getElementById("quizArea").innerHTML="";
+  document.getElementById("score").textContent="";
 
-// ===== 成績紀錄 =====
-function saveHistory(score){
-  const h=JSON.parse(localStorage.getItem("history")||"[]");
-  h.unshift(`${new Date().toLocaleString()}：${score}/10`);
-  localStorage.setItem("history",JSON.stringify(h.slice(0,5)));
-}
+  const selected=[...vocabBank].sort(()=>0.5-Math.random()).slice(0,10);
 
-function loadHistory(){
-  const h=JSON.parse(localStorage.getItem("history")||"[]");
-  document.getElementById("history").innerHTML=h.map(x=>`<li>${x}</li>`).join("");
-}
+  selected.forEach((v,i)=>{
+    const options=[v.word];
+    while(options.length<4){
+      const w=vocabBank[Math.floor(Math.random()*vocabBank.length)].word;
+      if(!options.includes(w)) options.push(w);
+    }
+    options.sort(()=>0.5-Math.random());
 
-// 初始化
-loadQuiz();
-loadHistory();
+    quizArea.innerHTML+=`
+    <div class="question">
+      <p>${i+1}. ${v.example.replace(v.word,"_____")}</p>
+      ${options.map(o=>`
+        <label>
+          <input type="radio" name="q${i}" value="${o}" required> ${o}
+        </label><br>`).join("")}
+      <div class="answer">✔ 正確答案：${v.word}<br>解析：${v.meaning}</div>
+    </div>`;
+  });
+
+  quizForm.onsubmit=function(e){
+    e.preventDefault();
+    let score=0;
+    selected.forEach((v,i)=>{
+      const checked=document.querySelector(`input[name="q${i}"]:checked`);
+      const box=checked.parentElement;
+      const ans=document.getElementsByClassName("answer")[i];
+      if(checked.value===v.word){
+        score++; box.classList.add("correct");
+      }else{
+        box.classList.add("wrong");
+      }
+      ans.style.display="block";
+    });
+    document.querySelectorAll("input").forEach(i=>i.disabled=true);
+    document.getElementById("score").textContent=`你的分數：${score} / 10`;
+  };
+}
 </script>
 
 </body>
 </html>
+
 
 
 
